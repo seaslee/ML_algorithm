@@ -50,9 +50,9 @@ xlabel('Number of iteration');
 ylabel('cost');
 print -dpng f1.png
 figure;
+plot(1:size(err_values,1),err_values);
 xlabel('Number of K');
 ylabel('cost');
-plot(1:size(err_values,1),err_values);
 print -dpng f2.png
  
 %with regularization
@@ -70,7 +70,7 @@ ylabel('cost');
 print -dpng f3.png
 figure;
 [m,n]=size(err_values);
-surf(1:n,1:m,cost_fun_values);
+surf(1:n,1:m,err_values);
 xlabel('Number of lambda');
 ylabel('Number of K');
 zlabel('cost');
