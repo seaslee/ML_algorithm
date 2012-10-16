@@ -1,0 +1,79 @@
+%=============================================================================
+%     FileName: main.m
+%         Desc: test the l_reg_model
+%       Author: XuXinchao
+%        Email: xxinchao@gmail.com
+%     HomePage: http://webdancer.is-programmer.com
+%      Version: 0.0.1
+%   LastChange: 2012-10-15 20:01:18
+%      History:
+%=============================================================================
+
+close all;
+clear;
+clc;
+
+data1=load('traningData-Ass1.txt');
+tn=size(data1,1);
+X_train=data1(:,1:9);
+Y_train=data1(:,10);
+
+data2=load('testData-Ass1.txt');
+testn=size(data2,1);
+X_test=data2(:,1:9);
+Y_test=data2(:,10);
+
+
+X_train_scale=scale(X_train);
+X_train_scale=[ones(tn,1) X_train_scale];
+X_test_scale=scale(X_test);
+X_test_scale=[ones(testn,1) X_test_scale];
+
+fn=size(X_train_scale,2);
+theta=zeros(fn,1);
+eta=0.0002;
+iter_nums=400;
+epsilon=0.001;
+fold=5;
+[best_theta,best_k,cost_fun_values,residual,is_con,err_values]=train_model(X_train_scale,Y_train,theta,eta,iter_nums,epsilon,fold);
+
+%[theta_opt,cost_fun_values,residual,is_con] = train_parameter(X_train_scale,Y_train,theta,eta,iter_nums,epsilon);
+
+[Y_pre,err]=predict(X_test_scale,Y_test,best_theta,best_k,X_train_scale,residual);
+
+fprintf('the error is %f,the k is %d',err,best_k);
+
+n=size(cost_fun_values,1);
+figure;
+plot(1:n,cost_fun_values);
+xlabel('Number of iteration');
+ylabel('cost');
+print -dpng f1.png
+figure;
+xlabel('Number of K');
+ylabel('cost');
+plot(1:size(err_values,1),err_values);
+print -dpng f2.png
+ 
+%with regularization
+[best_theta,best_k,best_lambda,cost_fun_values,residual,is_con,err_values]=train_model_reg(X_train_scale,Y_train,theta,eta,iter_nums,epsilon,fold);
+
+%[theta_opt,cost_fun_values,residual,is_con] = train_parameter(X_train_scale,Y_train,theta,eta,iter_nums,epsilon);
+
+[Y_pre,err]=predict(X_test_scale,Y_test,best_theta,best_k,X_train_scale,residual);
+
+fprintf('the error is %f,the k is %d,thet lambda is %f',err,best_k,best_lambda);
+
+n=size(cost_fun_values,1);
+figure;
+plot(1:n,cost_fun_values);
+xlabel('Number of iteration');
+ylabel('cost');
+print -dpng f3.png
+figure;
+[m,n]=size(err_values);
+surf(1:n,1:m,cost_fun_values);
+xlabel('Number of lambda');
+ylabel('Number of K');
+zlabel('cost');
+print -dpng f4.png
