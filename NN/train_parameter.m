@@ -21,7 +21,7 @@ for i=1:iter_nums,
         (i-1)*N+n
         [W1_grad,W2_grad] = mlp_backprop(X_train(n,:),Y_train(n,:),W1,W2,active_fun,active_fun_grad);
         W1=W1-eta*W1_grad;
-        W2=W2-eta*W2_grad;
+        W2=W2-eta*W2_grad
 	cost_fun_val=computer_cost_fun(X_train,Y_train,W1,W2,active_fun);
 	cost_fun_vals=[cost_fun_vals;cost_fun_val];
     end

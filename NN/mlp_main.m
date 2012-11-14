@@ -23,7 +23,7 @@ active_fun_grad=@sigmoid_grad;
 m=size(X_train,2);
 W1=zeros(hl_nums,m);
 W2=zeros(outl_nums,hl_nums+1);
-[W1,W2]=init_para(W1,W2);
+%[W1,W2]=init_para(W1,W2);
 [W1_opt,W2_opt,cost_fun_vals,is_convg] = train_parameter(X_train,Y_train,W1,W2,eta,iter_nums,epsilon,active_fun,active_fun_grad);
 Y_new = predict(X_train,W1_opt,W2_opt,active_fun);
 
