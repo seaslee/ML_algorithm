@@ -28,14 +28,22 @@ converged = 0;
 idx = zeros(N, 1);
 d = zeros(N, K);
 
+%pre-computer the distances between every sample
+squareSumOfCols = dot(X, X);
+disMat = bsxfun(@plus, squareSumOfCols, squareSumOfCols') - 2*(X'*X);
+
 while iterNum < maxiterNum,
     iterNum = iterNum + 1;
     %kmeans iteration
     %assign every sample to cluster according to current centroids
-    for n = 1:N,
-        for k = 1:K,
-            d(n,k) = norm(X(:,n) - centroids(:,k));
-        end
+%     for n = 1:N,
+%         for k = 1:K,
+%             d(n,k) = norm(X(:,n) - centroids(:,k));
+%         end
+%     end
+    for k=1:K,
+        disk = bsxfun(@minus, X, centroids(:,k));
+        d(:,k) = sqrt(dot(disk, disk)');
     end
     [~, idx] = min(d, [], 2);
  
@@ -63,13 +71,16 @@ end
 
 function objVal = computerObjVal()
 %computer objective function value
-d1 = zeros(N, K);
-for nn = 1:N,
-    for kk = 1:K,
-        d1(nn,kk) = norm(X(:,nn) - centroids(:,kk));
-    end
-end
-objVal = sum(sum(d1));
+% d1 = zeros(N, K);
+% for nn = 1:N,
+%     for kk = 1:K,
+%         d1(nn,kk) = norm(X(:,nn) - centroids(:,kk));
+%     end
+% end
+% objVal = sum(sum(d1));
+
+objVal = sum(sum(bsxfun(@times, sparse(1:N, idx, 1, N, K, N), d)));
+objVal = full(objVal);
 end 
 
 end
