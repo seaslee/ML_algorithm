@@ -23,7 +23,7 @@ end
 
 N = size(W,2);
 d = sum(W);
-d(d==0) = 1;
+d(d==0) = 1; %avoid zeros-divied
 D = diag(d);
 % Laplacian matrix
 L = D - W;
@@ -41,10 +41,8 @@ elseif s.normalized == 2,
     L =  eye(N) - sd*W*sd;
     [V, ~] = eigs(L, K, 'sm');
     %normalization rows
-    for i=1:N,
-        vv = V(i,:);
-        V(i,:) = vv./sqrt(sum(vv.^2));
-    end
+    squareSumOfCols = dot(V,V);
+    V = bsxfun(@rdivide, V, squareSumOfCols);
 else
     error('wrong normalized parameter value',s.normalized);
 end
