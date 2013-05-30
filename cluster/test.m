@@ -69,3 +69,42 @@ for k=1:K,
     end
     hold on;
 end
+
+%spectrum clustering test
+figure(4);
+%computer similarity matrix
+N = size(X,2);
+W = zeros(N);
+for i=1:N,
+    for j=1:N,
+        if j~=i,
+            x1 = X(:,i);
+            x2 = X(:,j);
+            %W(i,j) = x1'*x2./(norm(x1)*norm(x2));
+            W(i, j) = exp(-norm(x1-x2)^2/2);
+        else
+            W(i,j)=0;
+        end
+    end
+end
+% for i=1:N,
+%     s = sum(W(:,i));
+%     if s~=0,
+%         W(:,i) = W(:,i) / s;
+%     end
+% end
+
+[ind, converged, iterNum] = spectrumcluster(W, K, 'normalized',2);
+for k=1:K,
+    index = find(ind==k);
+    X_k = X(:,index);
+    if k==1,
+        scatter(X_k(1,:),X_k(2,:),20,'o','r');
+    elseif k==2,
+        scatter(X_k(1,:),X_k(2,:),20,'+','g');
+    else
+        scatter(X_k(1,:),X_k(2,:),20,'*','k');
+    end
+    hold on;
+end
+
