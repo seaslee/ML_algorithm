@@ -65,12 +65,6 @@ for i=1:N,
         end
     end
 end
-% for i=1:N,
-%     s = sum(W(:,i));
-%     if s~=0,
-%         W(:,i) = W(:,i) / s;
-%     end
-% end
 
 [ind, converged, iterNum] = spectrumcluster(W, K, 'normalized',2);
 for k=1:K,
@@ -86,3 +80,27 @@ for k=1:K,
     hold on;
 end
 
+% test agglomerative clustering
+load fisheriris
+%X = meas(1:5,:);
+[denMat, iterNum] = agglcluster(meas');
+figure(4);
+dendrogram(denMat);
+
+% test dbscan 
+eps = 0.5;
+minpts = 30;
+[ind, iterNum] = dbscan(X, eps, minpts);
+figure(5);
+for k=1:K,
+    index = find(ind==k);
+    X_k = X(:,index);
+    if k==1,
+        scatter(X_k(1,:),X_k(2,:),20,'o','r');
+    elseif k==2,
+        scatter(X_k(1,:),X_k(2,:),20,'+','g');
+    else
+        scatter(X_k(1,:),X_k(2,:),20,'*','k');
+    end
+    hold on;
+end
